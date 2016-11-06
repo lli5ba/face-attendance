@@ -11,7 +11,7 @@ require 'xlua'
 torch.setdefaulttensortype('torch.FloatTensor')
 
 local dataset = {}
-local imageSide = 256
+local imageSide = 224
 
 
 -- Loading the dataset to RAM --------------------------------------------------
