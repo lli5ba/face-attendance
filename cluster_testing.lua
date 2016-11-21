@@ -5,11 +5,17 @@ avgDist = 0
 
 imgSize = 120
 
+
+function print_scaled_image(img)
+	itorch.image(image.scale(img, 48, 48))
+end
+
 --batch size 10
 local rand_num1 = 2 --number between 1 and trainBatches
 local rand_num2 = 5 --number between 1 and 10
 local randbatch = data.getBatch(rand_num1, 'train')
 local test_img = randbatch[1][rand_num2] --can change rand_num2 and 1 to find good anchor
+print_scaled_image(test_img)
 
 --get the test_img embedding
 local resize_inputs = {torch.Tensor(batchSize, 3, imgSize, imgSize),
@@ -33,12 +39,8 @@ predict = parallel:forward({aImgs:cuda(), pImgs:cuda(), nImgs:cuda()})
 
 local test_img_emb = predict[1][rand_num2]
 
-function print_scaled_image(img)
-	itorch.image(image.scale(img, 48, 48))
-end
-
 --threshold from panda histogram
-local threshold = 0.6475
+local threshold = 0.61085965 --more conservative threshold is 0.34
 
 local file = io.open("clusterdist_" .. tostring(rand_num1) .. "_" .. tostring(rand_num2) .. ".txt", "a")
 for i = 1, trainBatches do
@@ -69,7 +71,7 @@ for i = 1, trainBatches do
                 clusterSize = clusterSize + 1
 				avgDist = avgDist + anchor_test
 				file:write(('%.6f\n'):format(anchor_test))
-                printImage(inputs[1][batchN])
+                print_scaled_image(inputs[1][batchN])
 				file:flush()
             end
            
